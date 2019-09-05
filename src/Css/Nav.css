@@ -1,0 +1,10 @@
+*{margin: 0; padding: 0;}
+a.item:hover {
+    background-color: white !important;
+    color: rgb(55, 51, 48) !important;
+}
+
+.ui.menu .active.item{
+    background-color: white !important;
+    color: rgb(55, 51, 48) !important;
+}

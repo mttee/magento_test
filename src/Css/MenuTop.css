@@ -1,0 +1,35 @@
+.helloAdmin{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 18px !important;
+}
+.helloAdmin .label{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.helloAdmin .content {
+    padding: 6px 0;
+    font-family: Arial, Helvetica, sans-serif
+}
+.helloAdmin .label img {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 500rem;
+    overflow: hidden;
+    object-fit: cover;
+    border: 2px solid #FFEB3B;
+}
+
+.itemLogo{
+    font-weight: 600 !important;
+    color: white !important;
+    border-bottom: 2px solid #e31102;
+}
+.imageDashboard{
+    width: 75px !important;
+    margin: 0 auto
+}
