@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import { Icon, Menu, Image } from 'semantic-ui-react'
+import {
+    NavLink
+  } from 'react-router-dom';
 
 import '../Css/Nav.css'
 
@@ -8,11 +11,14 @@ export default class Nav extends Component {
     constructor(props){
         super(props)
         this.state = {
-            activeItem: 'home'
+            activeItem: ''
         }
     }
 
-    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+    handleItemClick = (e, { name }) => {
+        this.setState({ activeItem: name })
+
+    }
 
     render() {
         const { activeItem } = this.state
@@ -25,31 +31,34 @@ export default class Nav extends Component {
                     <Image src='/images/logo_1.png' size='small' className="imageDashboard" />
                     Lion Company
                 </Menu.Item>
-                <Menu.Item
+                <Menu.Item as={NavLink}
                     name='home'
                     active={activeItem === 'home'}
                     onClick={this.handleItemClick}
                     style={navitem}
+                    to="/dashboard"
                 >
                     <Icon name='home' />
                     Home
                 </Menu.Item>
 
-                <Menu.Item
+                <Menu.Item as={NavLink}
                     name='orders'
                     active={activeItem === 'orders'}
                     onClick={this.handleItemClick}
                     style={navitem}
+                    to="/orders"
                 >
                     <Icon name='clipboard list' />
                     Orders
                 </Menu.Item>
 
-                <Menu.Item
+                <Menu.Item as={NavLink}
                     name='products'
                     active={activeItem === 'products'}
                     onClick={this.handleItemClick}
                     style={navitem}
+                    to="/products"
                 >
                     <Icon name='gift' />
                     Products

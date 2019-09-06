@@ -1,0 +1,5 @@
+*{margin: 0;padding: 0;}
+
+.orderCalendar .ui.table td.active{
+    background: #FFC107 !important;
+}

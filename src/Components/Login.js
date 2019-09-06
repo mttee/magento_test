@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Button, Form, Grid, Segment, Divider, Message } from 'semantic-ui-react'
 import Cookies from 'universal-cookie';
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
  
 const axios = require('axios');
 const cookies = new Cookies();
@@ -15,7 +16,8 @@ export default class Login extends Component {
             statusMessage: false,
             contentMassage: '',
             colorMessage: '',
-            loading: false
+            loading: false,
+            isLogin: false
         }
     }
 
@@ -66,11 +68,12 @@ export default class Login extends Component {
                 console.log(result);
                 
                 if(result.data !== null){
+                    cookies.set('mycookies', result.data);
                     
                     this.setState({
-                        loading: true
+                        loading: true,
+                        isLogin: true
                     })
-                    cookies.set('mycookies', result.data);
                 }
                 
             }).catch((error) => {
@@ -96,7 +99,19 @@ export default class Login extends Component {
         }
     }
 
+    componentDidMount(){
+        if(cookies.get('mycookies')){
+            this.setState({
+                isLogin: true
+            })
+        }
+    }
+
+
     render() {
+        if(this.state.isLogin === true){
+            return <Redirect to="/dashboard"/>
+        }
         return (
             <div>
                 <Container text>

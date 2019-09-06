@@ -1,15 +1,18 @@
 import React from 'react';
 import './App.css';
-import Router from './Router/router'
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
+import Rt from './Router/router'
 import { Container } from 'semantic-ui-react'
 
 function App() {
   return (
-    <div className="App">
-      <Container fluid>
-        <Router/>
-      </Container>
-    </div>
+    <Router>
+      <div className="App">
+        <Container fluid>
+          <Rt/>
+        </Container>
+      </div>
+    </Router>
   );
 }
 
