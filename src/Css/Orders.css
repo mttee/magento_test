@@ -3,3 +3,7 @@
 .orderCalendar .ui.table td.active{
     background: #FFC107 !important;
 }
+
+.orderCalendar .ui.red.label:parent{
+    background: #FFC107 !important; 
+}
