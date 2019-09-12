@@ -7,6 +7,7 @@ import MenuTop from '../Components/MenuTop'
 import Dashboard from '../Components/Dashboard';
 import Orders from '../Components/Orders'
 import Cookies from 'universal-cookie';
+import Products from '../Components/Products';
 
 const cookies = new Cookies();
 
@@ -16,9 +17,9 @@ function PrivateRoute({ component: Component, ...rest }) {
         {...rest}
         render={props =>
           cookies.get('mycookies') ? (
-            <div>
+            <>
                 <Grid columns='equal' >
-                    <Grid.Column style={{height: "100%", paddingRight: "0"}} >
+                    <Grid.Column width={2} style={{height: "100%", paddingRight: "0"}} >
                         <Nav />
                     </Grid.Column>
                     <Grid.Column width={14} style={{paddingLeft: "0"}}>
@@ -27,7 +28,7 @@ function PrivateRoute({ component: Component, ...rest }) {
                     </Grid.Column>
                 </Grid>
             <Component {...props} />
-            </div>
+            </>
           ) : (
             <Redirect
               to={{
@@ -61,12 +62,13 @@ export default class router extends Component {
     render() {
 
         return (
-            <div>
+            <>
                 <PrivateRoute path='/dashboard' component={Dashboard}/>
                 <PrivateRoute path='/orders' component={Orders}/>
+                <PrivateRoute path='/products' component={Products}/>
                 {/* <NavRoute path="/dashboard" component={Dashboard} /> */}
                 <Route exact path="/" component={Login} />
-            </div>
+            </>
         )
     }
 }

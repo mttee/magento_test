@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Image, Modal, Button, Header, Icon, Grid, Message,Segment, Divider } from 'semantic-ui-react'
+import { Image, Modal, Button, Header, Icon, Grid, Message, Segment, Divider, Table } from 'semantic-ui-react'
 
 //import calendar
 // import {
@@ -15,6 +15,7 @@ import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.scss'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
+import { async } from 'q';
 
 const DragAndDropCalendar = withDragAndDrop(Calendar)
 
@@ -59,7 +60,11 @@ export default class Orders extends Component {
             open: false,
             idOrderDetail: '',
             events: [],
-            orderDetail: null
+            orderDetail: null,
+            groupCustomer: '',
+            countryCustomerBilling:'',
+            countryCustomerShipping :'',
+            currency: ''
         }
 
         //this.moveEvent = this.moveEvent.bind(this)
@@ -123,7 +128,10 @@ export default class Orders extends Component {
             this.setState({
                 orderDetail: response.data
             });
-
+            console.log(response.data);
+            this.getGroupCustomer(response.data.customer_group_id)
+            this.getCountry(response.data.billing_address.country_id).then(result => this.setState({countryCustomerBilling: result}))
+            this.getCountry(response.data.extension_attributes.shipping_assignments[0].shipping.address.country_id).then(result => this.setState({countryCustomerShipping: result}))
         })
         this.setState({ dimmer, open: true })
 
@@ -175,6 +183,8 @@ export default class Orders extends Component {
 
             });
 
+            this.getCurrency()
+
 
         // var activeClass = document.querySelectorAll(".orderCalendar .ui.table td")
         // //console.log(activeClass.classList.contains(' ui red label'))
@@ -192,6 +202,45 @@ export default class Orders extends Component {
     //         this.setState({ [name]:value });
     //     }
     // }
+
+    getGroupCustomer = (id) => {
+        axios({
+            method: 'get',
+            url: 'https://localhost/magento_test/index.php/rest/V1/customerGroups/'+id,
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': 'Bearer ' + cookies.get('mycookies')
+            },
+        }).then((response)=>{
+             this.setState({groupCustomer :response.data.code}) 
+        })
+    }
+
+    getCountry = async(id) => {
+        const country = await axios({
+            method: 'get',
+            url: 'https://localhost/magento_test/index.php/rest/V1/directory/countries/'+id,
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': 'Bearer ' + cookies.get('mycookies')
+            },
+        }).then((response)=>{
+            
+            return(response.data.full_name_locale)
+             //this.setState({countryCustomer :response.data.full_name_locale}) 
+        })
+        return country
+    }
+
+    getCurrency = () =>{
+        axios({
+            method: 'get',
+            url: 'https://localhost/magento_test/index.php/rest/V1/directory/currency'
+        }).then((response)=>{
+             this.setState({currency :response.data.base_currency_symbol}) 
+        })
+    }
+
     render() {
 
 
@@ -228,82 +277,165 @@ export default class Orders extends Component {
 
             <>
                 <Modal dimmer={dimmer} open={open} onClose={this.close}>
-                    <Modal.Header>Orders {this.state.orderDetail ? this.state.orderDetail.increment_id : null}</Modal.Header>
+                    <Modal.Header style={HeaderStyle}>Orders {this.state.orderDetail ? this.state.orderDetail.increment_id : null}</Modal.Header>
                     <Modal.Content image scrolling>
 
-                        <Grid style={{width:"100%", margin: "auto"}}>
+                        <Grid style={{ width: "100%", margin: "auto" }}>
                             <Grid.Row >
                                 <Grid.Column width={8}>
                                     <Segment>
-                                        <Header as='h4' floated='left'>
+                                        <Header as='h4' floated='left' style={segmentHeader}>
                                             Order
                                         </Header>
 
                                         <Divider clearing />
-                                        <p>Order Date: <span> {this.state.orderDetail ? moment(this.state.orderDetail.updated_at).format("HH : mm DD/MM/YYY") : null} </span></p>
-                                        <p>Order Status: <span> {this.state.orderDetail ? this.state.orderDetail.status: null} </span></p>
-                                        <p>Purchased From: <span> {this.state.orderDetail ? this.state.orderDetail.store_name: null} </span></p>
+                                        <p>Order Date: <span style={dataShowStyle}> {this.state.orderDetail ? moment(this.state.orderDetail.updated_at).format("HH : mm - DD/MM/YYYY") : null} </span></p>
+                                        <p>Order Status: <span style={dataShowStyle}> {this.state.orderDetail ? this.state.orderDetail.status : null} </span></p>
+                                        <p>Purchased From: <span style={dataShowStyle}> {this.state.orderDetail ? this.state.orderDetail.store_name : null} </span></p>
                                     </Segment>
                                 </Grid.Column>
                                 <Grid.Column width={8}>
                                     <Segment>
-                                        <Header as='h4' floated='left'>
+                                        <Header as='h4' floated='left' style={segmentHeader}>
                                             Account Information
                                         </Header>
 
                                         <Divider clearing />
-                                        <p>Customer Name: <span> {this.state.orderDetail ? this.state.orderDetail.billing_address.firstname +''+ this.state.orderDetail.billing_address.lastname  : null} </span></p>
-                                        <p>Email: <span> {this.state.orderDetail ? this.state.orderDetail.billing_address.email: null} </span></p>
-                                        <p>Customer Group: <span> {this.state.orderDetail ? this.state.orderDetail.store_name: null} </span></p>
+                                        <p>Customer Name: <span style={dataShowStyle}> {this.state.orderDetail ? this.state.orderDetail.billing_address.firstname + '' + this.state.orderDetail.billing_address.lastname : null} </span></p>
+                                        <p>Email: <span style={dataShowStyle}> {this.state.orderDetail ? this.state.orderDetail.billing_address.email : null} </span></p>
+                                        <p>Customer Group: <span style={dataShowStyle}> {this.state.groupCustomer} </span></p>
+                                    </Segment>
+                                </Grid.Column>
+                            </Grid.Row>
+
+                            <Grid.Row >
+                                <Grid.Column width={8}>
+                                    <Segment>
+                                        <Header as='h4' floated='left' style={segmentHeader}>
+                                            Billing Address
+                                        </Header>
+
+                                        <Divider clearing />
+
+                                        <p>{this.state.orderDetail ? this.state.orderDetail.billing_address.firstname + '' + this.state.orderDetail.billing_address.lastname : null}</p>
+                                        <p>{this.state.orderDetail ? this.state.orderDetail.billing_address.street[0] : null} </p>
+                                        <p>{this.state.orderDetail ? this.state.orderDetail.billing_address.city + ', ' + this.state.orderDetail.billing_address.region + ', ' + this.state.orderDetail.billing_address.postcode : null}</p>
+                                        <p>{this.state.countryCustomerBilling} </p>
+                                        <p>{this.state.orderDetail ? this.state.orderDetail.billing_address.telephone : null} </p>
+                                    </Segment>
+                                </Grid.Column>
+                                <Grid.Column width={8}>
+                                    <Segment>
+                                        <Header as='h4' floated='left' style={segmentHeader}>
+                                            Shipping Address
+                                        </Header>
+
+                                        <Divider clearing />
+                                        <p>
+                                            {this.state.orderDetail ?
+                                                this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.firstname + '' +
+                                                this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.lastname : null}
+                                        </p>
+                                        <p>{this.state.orderDetail ? this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.street[0] : null} </p>
+                                        <p>{this.state.orderDetail ? this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.city + ', ' +
+                                            this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.region + ', ' +
+                                            this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.postcode : null}
+                                        </p>
+                                        <p>{this.state.countryCustomerShipping} </p>
+                                        <p>{this.state.orderDetail ? this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.telephone : null} </p>
+                                    </Segment>
+                                </Grid.Column>
+                            </Grid.Row>
+
+                            <Grid.Row >
+                                <Grid.Column width={8}>
+                                    <Segment>
+                                        <Header as='h4' floated='left' style={segmentHeader}>
+                                            Payment Information
+                                        </Header>
+
+                                        <Divider clearing />
+
+                                        <p>{this.state.orderDetail ? this.state.orderDetail.payment.additional_information[0] : null}</p>
+                                        <p>The order was placed using: {this.state.orderDetail ? this.state.orderDetail.order_currency_code : null}</p>
+
+                                    </Segment>
+                                </Grid.Column>
+                                <Grid.Column width={8}>
+                                    <Segment>
+                                        <Header as='h4' floated='left' style={segmentHeader}>
+                                            Shipping & Handling Information
+                                        </Header>
+
+                                        <Divider clearing />
+
+                                        <p>{this.state.orderDetail ? this.state.orderDetail.shipping_description + ' ₫' + this.state.orderDetail.shipping_invoiced + '.00' : null}</p>
+
                                     </Segment>
                                 </Grid.Column>
                             </Grid.Row>
 
                             <Grid.Row >
                                 <Grid.Column width={16}>
-                                <h5>Billing Address </h5>
-                                </Grid.Column>
-                                <Grid.Column width={8}>
                                     <Segment>
-                                        <Header as='h4' floated='left'>
-                                            Billing Address
+                                        <Header as='h4' floated='left' style={segmentHeader}>
+                                            Items Ordered
                                         </Header>
 
                                         <Divider clearing />
-                                        
-                                        <p>{this.state.orderDetail ? this.state.orderDetail.billing_address.firstname +''+ this.state.orderDetail.billing_address.lastname  : null}</p>
-                                        <p>{this.state.orderDetail ?this.state.orderDetail.billing_address.street[0]: null} </p>
-                                        <p>{this.state.orderDetail ? this.state.orderDetail.billing_address.city +', '+ this.state.orderDetail.billing_address.region + ', '+this.state.orderDetail.billing_address.postcode: null}</p>
-                                        <p>{this.state.orderDetail ?this.state.orderDetail.billing_address.country_id: null} </p>
-                                    </Segment>
-                                </Grid.Column>
-                                <Grid.Column width={8}>
-                                    <Segment>
-                                        <Header as='h4' floated='left'>
-                                            Shipping Address 
-                                        </Header>
 
-                                        <Divider clearing />
-                                        <p>
-                                        {this.state.orderDetail ? 
-                                            this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.firstname +''+ 
-                                            this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.lastname  : null}
-                                        </p>
-                                        <p>{this.state.orderDetail ?this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.street[0]: null} </p>
-                                        <p>{this.state.orderDetail ? this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.city +', '+ 
-                                            this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.region + ', '+
-                                            this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.postcode: null}
-                                        </p>
-                                        <p>{this.state.orderDetail ?this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.telephone: null} </p>
+                                        <Table celled color="blue" style={tableStyle}>
+                                            <Table.Header>
+                                                <Table.Row>
+                                                    <Table.HeaderCell>Product</Table.HeaderCell>
+                                                    <Table.HeaderCell>Item Status</Table.HeaderCell>
+                                                    <Table.HeaderCell>Original Price</Table.HeaderCell>
+                                                    <Table.HeaderCell>Price</Table.HeaderCell>
+                                                    <Table.HeaderCell>Qty</Table.HeaderCell>
+                                                    <Table.HeaderCell>Subtotal</Table.HeaderCell>
+                                                    <Table.HeaderCell>Tax Amount</Table.HeaderCell>
+                                                    <Table.HeaderCell>Tax Percent</Table.HeaderCell>
+                                                    <Table.HeaderCell>Discount Amount</Table.HeaderCell>
+                                                    <Table.HeaderCell>Row Total</Table.HeaderCell>
+                                                </Table.Row>
+                                            </Table.Header>
+
+                                            <Table.Body>
+                                                <Table.Row>
+                                                    <Table.Cell>
+                                                        <p>{this.state.orderDetail ? this.state.orderDetail.items[0].name: null } </p>
+                                                        <p>SKU: {this.state.orderDetail ? this.state.orderDetail.items[0].sku: null } </p>
+                                                        <p>Size: {this.state.orderDetail ? this.state.orderDetail.items[0].sku: null } </p>
+                                                        <p>Color: {this.state.orderDetail ? this.state.orderDetail.items[0].sku: null } </p>
+                                                    </Table.Cell>                                                 
+                                                    <Table.Cell>Cell</Table.Cell>
+                                                    <Table.Cell>{this.state.orderDetail ? this.state.orderDetail.items[0].original_price + ' '+ this.state.currency: null }</Table.Cell>
+                                                    <Table.Cell>{this.state.orderDetail ? this.state.orderDetail.items[0].price+ ' '+ this.state.currency: null }</Table.Cell>
+                                                    <Table.Cell>
+                                                        <p>Canceled: {this.state.orderDetail ? this.state.orderDetail.items[0].qty_canceled: null } </p>
+                                                        <p>Invoiced: {this.state.orderDetail ? this.state.orderDetail.items[0].qty_invoiced: null } </p>
+                                                        <p>Ordered: {this.state.orderDetail ? this.state.orderDetail.items[0].qty_ordered: null } </p>
+                                                        <p>Refunded: {this.state.orderDetail ? this.state.orderDetail.items[0].qty_refunded: null } </p>
+                                                        <p>Shipped: {this.state.orderDetail ? this.state.orderDetail.items[0].qty_shipped: null } </p>
+                                                    </Table.Cell>
+                                                    <Table.Cell>{this.state.orderDetail ? this.state.orderDetail.subtotal+ ' '+ this.state.currency: null }</Table.Cell>
+                                                    <Table.Cell>{this.state.orderDetail ? this.state.orderDetail.items[0].tax_amount+ ' '+ this.state.currency: null }</Table.Cell>
+                                                    <Table.Cell>{this.state.orderDetail ? this.state.orderDetail.items[0].tax_percent: null }%</Table.Cell>
+                                                    <Table.Cell>{this.state.orderDetail ? this.state.orderDetail.items[0].discount_amount+ ' '+ this.state.currency: null }</Table.Cell>
+                                                    <Table.Cell>{this.state.orderDetail ? this.state.orderDetail.items[0].row_total_incl_tax+ ' '+ this.state.currency: null }</Table.Cell> 
+                                                </Table.Row>
+                                            </Table.Body>
+                                        </Table>
+
                                     </Segment>
                                 </Grid.Column>
                             </Grid.Row>
 
                         </Grid>
-                        
+
 
                     </Modal.Content>
-                    <Modal.Actions>
+                    {/* <Modal.Actions>
                         <Button color='black' onClick={this.close}>
                             Nope
                         </Button>
@@ -314,7 +446,7 @@ export default class Orders extends Component {
                             content="Yep, that's me"
                             onClick={this.close}
                         />
-                    </Modal.Actions>
+                    </Modal.Actions> */}
                 </Modal>
 
 
@@ -367,6 +499,19 @@ export default class Orders extends Component {
     }
 
 }
-const at = {
-    background: 'yellow'
+const HeaderStyle = {
+    background: "#3174ad",
+    color: "white"
+}
+const segmentHeader = {
+    color: "#3174ad"
+}
+const dataShowStyle = {
+    color: "#3174ad",
+    fontWeight: "bold"
+}
+const tableStyle = {
+    overflowX: "scroll",
+    maxWidth: "100%",
+    display: "block"
 }
