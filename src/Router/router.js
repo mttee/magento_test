@@ -8,6 +8,7 @@ import Dashboard from '../Components/Dashboard';
 import Orders from '../Components/Orders'
 import Cookies from 'universal-cookie';
 import Products from '../Components/Products';
+import ProductDetails from '../Components/ProductDetails';
 
 const cookies = new Cookies();
 
@@ -27,7 +28,38 @@ function PrivateRoute({ component: Component, ...rest }) {
                         <Component {...props} />
                     </Grid.Column>
                 </Grid>
-            <Component {...props} />
+            {/* <Component {...props} /> */}
+            </>
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/",
+                state: { from: props.location }
+              }}
+            />
+          )
+        }
+      />
+    );
+  }
+
+function PublicRoute({ component: Component, ...rest }) {
+    return (
+      <Route
+        {...rest}
+        render={props =>
+          cookies.get('mycookies') ? (
+            <>
+                <Grid columns='equal' >
+                    {/* <Grid.Column width={2} style={{height: "100%", paddingRight: "0"}} >
+                        <Nav />
+                    </Grid.Column> */}
+                    <Grid.Column width={16} style={{paddingLeft: "0"}}>
+                        <MenuTop/>
+                        <Component {...props} />
+                    </Grid.Column>
+                </Grid>
+            {/* <Component {...props} /> */}
             </>
           ) : (
             <Redirect
@@ -65,7 +97,8 @@ export default class router extends Component {
             <>
                 <PrivateRoute path='/dashboard' component={Dashboard}/>
                 <PrivateRoute path='/orders' component={Orders}/>
-                <PrivateRoute path='/products' component={Products}/>
+                <PrivateRoute exact path='/products' component={Products}/>
+                <PublicRoute path='/products/details/:sku' component={ProductDetails}/>
                 {/* <NavRoute path="/dashboard" component={Dashboard} /> */}
                 <Route exact path="/" component={Login} />
             </>

@@ -15,7 +15,7 @@ export default class Products extends Component {
     }
 
 
-    componentDidMount(){
+    componentWillMount(){
         axios({
             method: 'get',
             url: 'https://localhost/magento_test/index.php/rest//V1/products?searchCriteria[pageSize]=5',
@@ -32,6 +32,7 @@ export default class Products extends Component {
         this.getCurrency()
     }
 
+    //Get Curency
     getCurrency = () =>{
         axios({
             method: 'get',
@@ -44,10 +45,10 @@ export default class Products extends Component {
 
 
     render() {
-        return [
+        return (
            
                 this.state.products.map((pr, key)=>(
-                    <Card color='blue' key={key} style={{float:"left",textAlign:"left"}}
+                    <Card color='blue' key={key} style={styleCard}
                         image={"http://localhost/magento_test/pub/media/catalog/product/"+pr.media_gallery_entries[0].file}
                         header={pr.name}
                         meta={pr.options}
@@ -70,19 +71,25 @@ export default class Products extends Component {
                                 <div style={{float: "left", color:"gray"}}>
                                     Price: {pr.price+ '' + this.state.currency}
                                 </div>
-                                <a style={{float: "right"}}>
-                                <Button animated color='blue'>
-                                    <Button.Content visible>Details</Button.Content>
-                                    <Button.Content hidden>
-                                        <Icon name='arrow right' />
-                                    </Button.Content>
-                                </Button>  
+                                <a style={{float: "right"}} href={"/products/details/"+pr.sku}>
+                                    <Button animated color='blue'>
+                                        <Button.Content visible>Details</Button.Content>
+                                        <Button.Content hidden>
+                                            <Icon name='arrow right' />
+                                        </Button.Content>
+                                    </Button>  
                                 </a>
                             </>
                         }
                     />
                 ))
             
-        ]
+        )
     }
+}
+
+const styleCard = {
+    float:"left",
+    textAlign:"left",
+    margin: "1%"
 }
