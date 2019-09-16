@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Icon, Button } from 'semantic-ui-react'
+import { Card, Icon, Button, Segment, Dimmer, Loader } from 'semantic-ui-react'
 import Cookies from 'universal-cookie';
 
 const axios = require('axios');
@@ -10,7 +10,8 @@ export default class Products extends Component {
         super(props)
         this.state = {
             products: [],
-            currency: null
+            currency: null,
+            loading: true
         }
     }
 
@@ -26,7 +27,8 @@ export default class Products extends Component {
         }).then((response) => {
             console.log(response.data.items);
             this.setState({
-                products: response.data.items
+                products: response.data.items,
+                loading: false
             })
         })
         this.getCurrency()
@@ -45,6 +47,15 @@ export default class Products extends Component {
 
 
     render() {
+        if(this.state.loading === true){
+            return (<Segment style={{height:"100%", margin:"0"}}>
+                <Dimmer active inverted style={{backgroundColor: "lightgray"}}>
+                    <Loader size='large'>Loading</Loader>
+                </Dimmer>
+
+                </Segment>
+            )
+        }
         return (
            
                 this.state.products.map((pr, key)=>(

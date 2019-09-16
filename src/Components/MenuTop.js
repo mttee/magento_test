@@ -26,7 +26,7 @@ export default class MenuTop extends Component {
             return <Redirect to="/"/>
         }
         return (
-            <Menu style={{ backgroundColor: "rgb(55, 51, 48)", borderRadius: "0", border: "0", position: "relative" }}>                
+            <Menu style={{ backgroundColor: "rgb(55, 51, 48)", borderRadius: "0", border: "0", position: "relative", margin:"0" }}>                
                 <Feed className="helloAdmin">
                     <Feed.Event
                     image='https://images-na.ssl-images-amazon.com/images/I/51QsquBv8DL._SX425_.jpg'

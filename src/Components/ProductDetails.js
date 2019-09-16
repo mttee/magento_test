@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import Cookies from 'universal-cookie';
-import { Grid, Image, Segment, Header, Divider, Rating, Form, Message, Button, Container, Tab } from 'semantic-ui-react'
+import { Grid, Image, Segment, Header, Divider, Rating, Form, Message, Button, Container, Tab, Card, Popup, Icon, Dimmer, Loader, TextArea } from 'semantic-ui-react'
 import { Zoom } from 'react-slideshow-image';
+import { async } from 'q';
 
 const axios = require('axios');
 const cookies = new Cookies();
@@ -23,6 +24,8 @@ export default class ProductDetails extends Component {
             attributeMaterial: [],
             attributeStrap_Handle: [],
             attributeFeatures: [],
+            productList: [],
+            loading: true
         }
     }
 
@@ -42,9 +45,20 @@ export default class ProductDetails extends Component {
                 'Authorization': 'Bearer ' + cookies.get('mycookies')
             },
         }).then((response) => {
+            var arrProduct = []
             this.setState({
-                product: response.data
+                product: response.data,
+                loading: false
             });
+            response.data.product_links.forEach(async (pr) => {
+                if (pr.link_type === "upsell") {
+                    const res = await this.getProductList(pr.linked_product_sku)
+                    arrProduct.push(res)
+                    this.setState({
+                        productList: arrProduct
+                    })
+                }
+            })
         })
     }
 
@@ -69,6 +83,10 @@ export default class ProductDetails extends Component {
         if (this.state.amount < 1) {
             this.setState({
                 showMessage: true
+            })
+        } else {
+            this.setState({
+                showMessage: false
             })
         }
 
@@ -96,7 +114,7 @@ export default class ProductDetails extends Component {
                 'Authorization': 'Bearer ' + cookies.get('mycookies')
             },
         }).then((response) => {
-            this.setState({ attributeStyle: response.data})
+            this.setState({ attributeStyle: response.data })
         })
     }
 
@@ -109,7 +127,7 @@ export default class ProductDetails extends Component {
                 'Authorization': 'Bearer ' + cookies.get('mycookies')
             },
         }).then((response) => {
-            this.setState({ attributeMaterial: response.data})
+            this.setState({ attributeMaterial: response.data })
         })
     }
 
@@ -122,7 +140,7 @@ export default class ProductDetails extends Component {
                 'Authorization': 'Bearer ' + cookies.get('mycookies')
             },
         }).then((response) => {
-            this.setState({ attributeStrap_Handle: response.data})
+            this.setState({ attributeStrap_Handle: response.data })
         })
     }
 
@@ -135,7 +153,7 @@ export default class ProductDetails extends Component {
                 'Authorization': 'Bearer ' + cookies.get('mycookies')
             },
         }).then((response) => {
-            this.setState({ attributeFeatures: response.data})
+            this.setState({ attributeFeatures: response.data })
         })
     }
 
@@ -143,7 +161,7 @@ export default class ProductDetails extends Component {
         {
             menuItem: 'Details',
             render: () =>
-                <Tab.Pane>
+                <Tab.Pane style={{ textAlign: "left" }}>
                     {this.state.product.custom_attributes.map((c) => {
                         if (c.attribute_code === 'description') {
                             const regex = /(<([^>]+)>)/ig
@@ -153,35 +171,189 @@ export default class ProductDetails extends Component {
                     })}
                 </Tab.Pane>
         },
-        { menuItem: 'More Information', render: () => 
-            <Tab.Pane>
-                <p>
-                    Activity: 
+        {
+            menuItem: 'More Information', render: () =>
+                <Tab.Pane>
+                    <p style={styleInfomation}>
+                        Activity:
                     {this.state.attributeActivity.map((ac) => {
-                        {this.state.product.custom_attributes.map((ca) => {
-                            if(ca.attribute_code === 'activity'){
-                                //  console.log(ca.value)
-                                //  console.log(ac.value)
-                                if(ca.value === ac.value){
-                                    console.log(ac.value)
-                                   //return(<span>{ac.label}</span>)
-                                }
+                            var kq;
+                            {
+                                this.state.product.custom_attributes.map((ca, key) => {
+                                    if (ca.attribute_code === 'activity') {
+                                        var array = JSON.parse("[" + ca.value + "]");
+                                        array.map((v, key) => {
+                                            // console.log(v)
+                                            //console.log(v)
+                                            //  console.log(key)
+                                            if (v == ac.value) {
+                                                //console.log(ac.label)
+                                                kq = (<span key={key} style={styleInfomationSpan}> {ac.label}, </span>)
+                                            }
+                                        })
+
+                                    }
+                                })
                             }
+                            return kq
                         })}
+                    </p>
+                    <p style={styleInfomation}>Style:
+                    {this.state.attributeStyle.map((ac) => {
+                        var kq;
+                        {
+                            this.state.product.custom_attributes.map((ca, key) => {
+                                if (ca.attribute_code === 'style_bags') {
+                                    var array = JSON.parse("[" + ca.value + "]");
+                                    array.map((v, key) => {
+                                        // console.log(v)
+                                        //console.log(v)
+                                        //  console.log(key)
+                                        if (v == ac.value) {
+                                            //console.log(ac.label)
+                                            kq = (<span key={key} style={styleInfomationSpan}> {ac.label} </span>)
+                                        }
+                                    })
+
+                                }
+                            })
+                        }
+                        return kq
                     })}
-                </p>
-                <p>Style</p>
-                <p>Material</p>
-                <p>Strap/Handle</p>
-                <p>Features</p>
-            </Tab.Pane> 
+                    </p>
+                    <p style={styleInfomation}>Material:
+                {this.state.attributeMaterial.map((ac) => {
+                        var kq;
+                        {
+                            this.state.product.custom_attributes.map((ca, key) => {
+                                if (ca.attribute_code === "material") {
+                                    var array = JSON.parse("[" + ca.value + "]");
+                                    array.map((v, key) => {
+                                        // console.log(v)
+                                        //console.log(v)
+                                        //  console.log(key)
+                                        if (v == ac.value) {
+                                            //console.log(ac.label)
+                                            kq = (<span key={key} style={styleInfomationSpan}> {ac.label}, </span>)
+                                        }
+                                    })
+
+                                }
+                            })
+                        }
+                        return kq
+                    })}
+                    </p>
+                    <p style={styleInfomation}>Strap/Handle:
+                    {this.state.attributeStrap_Handle.map((ac) => {
+                        var kq;
+                        {
+                            this.state.product.custom_attributes.map((ca, key) => {
+                                if (ca.attribute_code === "strap_bags") {
+                                    var array = JSON.parse("[" + ca.value + "]");
+                                    array.map((v, key) => {
+                                        // console.log(v)
+                                        //console.log(v)
+                                        //  console.log(key)
+                                        if (v == ac.value) {
+                                            //console.log(ac.label)
+                                            kq = (<span key={key} style={styleInfomationSpan}> {ac.label}, </span>)
+                                        }
+                                    })
+
+                                }
+                            })
+                        }
+                        return kq
+                    })}
+                    </p>
+                    <p style={styleInfomation}>Features:
+                    {this.state.attributeFeatures.map((ac) => {
+                        var kq;
+                        {
+                            this.state.product.custom_attributes.map((ca, key) => {
+                                if (ca.attribute_code === "features_bags") {
+                                    var array = JSON.parse("[" + ca.value + "]");
+                                    array.map((v, key) => {
+                                        // console.log(v)
+                                        //console.log(v)
+                                        //  console.log(key)
+                                        if (v == ac.value) {
+                                            //console.log(ac.label)
+                                            kq = (<span key={key} style={styleInfomationSpan}> {ac.label}, </span>)
+                                        }
+                                    })
+
+                                }
+                            })
+                        }
+                        return kq
+                    })}
+                    </p>
+                </Tab.Pane>
         },
-        { menuItem: 'Reviews', render: () => <Tab.Pane>Tab 3 Content</Tab.Pane> },
+        {
+            menuItem: 'Reviews', render: () =>
+                <Tab.Pane>
+                    <Grid columns={2} divided>
+                        <Grid.Row>
+                            <Grid.Column>
+                                <Form>
+                                <Form.Field>
+                                    <label style={{ textAlign: "left" }}>Nickname</label>
+                                    <Rating maxRating={5} defaultRating={3} icon='star' size='massive' style={{ float: "left" }}/>
+                                    <br />
+                                    <br />
+                                </Form.Field>
+                                    <Form.Field>
+                                        <label style={{ textAlign: "left" }}>Nickname</label>
+                                        <input/>
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <label style={{ textAlign: "left" }}>Summary</label>
+                                        <input />
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <label style={{ textAlign: "left" }}>Review</label>
+                                        <textarea/>
+                                    </Form.Field>
+                                    <Button type='submit'  inverted color='blue'>Submit Review &nbsp;<Icon name="send"/></Button>
+                                </Form>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </Tab.Pane>
+        },
     ]
+
+
+    getProductList = async (sku) => {
+        const data = await axios({
+            method: 'get',
+            url: 'https://localhost/magento_test/index.php/rest/V1/products/' + sku,
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': 'Bearer ' + cookies.get('mycookies')
+            },
+        }).then((response) => {
+            return (response.data)
+        })
+        return data
+    }
 
 
     render() {
         console.log(this.state.product);
+
+        if (this.state.loading === true) {
+            return (<Segment style={{ height: "100vh", margin: "0" }}>
+                <Dimmer active inverted style={{ backgroundColor: "lightgray" }}>
+                    <Loader size='large'>Loading</Loader>
+                </Dimmer>
+
+            </Segment>
+            )
+        }
 
         if (this.state.product !== null) {
             return (
@@ -197,7 +369,7 @@ export default class ProductDetails extends Component {
                                     </Zoom>
                                 </div>
                             </Grid.Column>
-                            <Grid.Column width={9}>
+                            <Grid.Column width={9} verticalAlign="middle">
                                 <Segment color='blue'>
                                     <Header as='h2' floated='left'>
                                         {this.state.product.name}
@@ -237,6 +409,33 @@ export default class ProductDetails extends Component {
                                 <Tab panes={this.panes} />
                             </Grid.Column>
                         </Grid.Row>
+
+                        <Grid.Row>
+                            <Grid.Column width={16}>
+                                <Divider horizontal>
+                                    <Header as='h4' floated="left">
+                                        We found other products you might like!
+                                    </Header>
+                                </Divider>
+                                <Card.Group itemsPerRow={6}>
+                                    {this.state.productList.map((pr, key) => (
+
+                                        <Card key={key} raised href={"/products/details/" + pr.sku}>
+                                            <Image src={'http://localhost/magento_test/pub/media/catalog/product/' + pr.media_gallery_entries[0].file} />
+                                            <Card.Content>
+                                                <Card.Header style={{ fontSize: "13px" }}>{pr.name}</Card.Header>
+
+                                            </Card.Content>
+                                            <Button animated='fade' color='blue' attached='bottom'>
+                                                <Button.Content visible>{pr.price + " " + this.state.currency}</Button.Content>
+                                                <Button.Content hidden ><Icon name='shopping cart' /></Button.Content>
+                                            </Button>
+                                        </Card>
+                                    ))}
+                                </Card.Group>
+                            </Grid.Column>
+                        </Grid.Row>
+
                     </Grid>
                 </Container>
             )
@@ -254,4 +453,16 @@ const zoomOutProperties = {
     indicators: true,
     scale: 0.4,
     arrows: true
+}
+
+const styleInfomation = {
+    textAlign: "left",
+    fontWeight: "bold",
+    fontSize: "15px",
+    paddingRight: "3%"
+}
+
+const styleInfomationSpan = {
+    fontSize: "14px",
+    fontWeight: '500'
 }

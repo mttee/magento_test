@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Image, Modal, Button, Header, Icon, Grid, Message, Segment, Divider, Table } from 'semantic-ui-react'
+import { Image, Modal, Button, Header, Icon, Grid, Message, Segment, Divider, Table, Dimmer, Loader } from 'semantic-ui-react'
 
 //import calendar
 // import {
@@ -64,7 +64,8 @@ export default class Orders extends Component {
             groupCustomer: '',
             countryCustomerBilling:'',
             countryCustomerShipping :'',
-            currency: ''
+            currency: '',
+            loading: true
         }
 
         //this.moveEvent = this.moveEvent.bind(this)
@@ -178,7 +179,8 @@ export default class Orders extends Component {
                 this.setState({
                     items: response.data.items,
                     date: response.data.items,
-                    events: response.data.items
+                    events: response.data.items,
+                    loading: false
                 })
 
             });
@@ -243,7 +245,15 @@ export default class Orders extends Component {
 
     render() {
 
-
+        if(this.state.loading === true){
+            return (
+                <Segment style={{height:"100%", margin:"0"}}>
+                    <Dimmer active inverted style={{backgroundColor: "lightgray"}}>
+                        <Loader size='large'>Loading</Loader>
+                    </Dimmer>
+                </Segment>
+            )
+        }
         //console.log(this.state.orderDetail);
         const { open, dimmer } = this.state
         return (
@@ -301,7 +311,7 @@ export default class Orders extends Component {
                                         </Header>
 
                                         <Divider clearing />
-                                        <p>Customer Name: <span style={dataShowStyle}> {this.state.orderDetail ? this.state.orderDetail.billing_address.firstname + '' + this.state.orderDetail.billing_address.lastname : null} </span></p>
+                                        <p>Customer Name: <span style={dataShowStyle}> {this.state.orderDetail ? this.state.orderDetail.billing_address.firstname + ' ' + this.state.orderDetail.billing_address.lastname : null} </span></p>
                                         <p>Email: <span style={dataShowStyle}> {this.state.orderDetail ? this.state.orderDetail.billing_address.email : null} </span></p>
                                         <p>Customer Group: <span style={dataShowStyle}> {this.state.groupCustomer} </span></p>
                                     </Segment>
@@ -317,7 +327,7 @@ export default class Orders extends Component {
 
                                         <Divider clearing />
 
-                                        <p>{this.state.orderDetail ? this.state.orderDetail.billing_address.firstname + '' + this.state.orderDetail.billing_address.lastname : null}</p>
+                                        <p>{this.state.orderDetail ? this.state.orderDetail.billing_address.firstname + ' ' + this.state.orderDetail.billing_address.lastname : null}</p>
                                         <p>{this.state.orderDetail ? this.state.orderDetail.billing_address.street[0] : null} </p>
                                         <p>{this.state.orderDetail ? this.state.orderDetail.billing_address.city + ', ' + this.state.orderDetail.billing_address.region + ', ' + this.state.orderDetail.billing_address.postcode : null}</p>
                                         <p>{this.state.countryCustomerBilling} </p>
@@ -333,7 +343,7 @@ export default class Orders extends Component {
                                         <Divider clearing />
                                         <p>
                                             {this.state.orderDetail ?
-                                                this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.firstname + '' +
+                                                this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.firstname + ' ' +
                                                 this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.lastname : null}
                                         </p>
                                         <p>{this.state.orderDetail ? this.state.orderDetail.extension_attributes.shipping_assignments[0].shipping.address.street[0] : null} </p>
