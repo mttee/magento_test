@@ -391,7 +391,7 @@ export default class ProductDetails extends Component {
 
         if (this.state.product !== null) {
             return (
-                <Container>
+                <Container> 
                     <Grid>
                         <Grid.Row>
                             <Grid.Column width={7}>
