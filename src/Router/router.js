@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import { Grid } from 'semantic-ui-react'
+import { Grid, GridColumn } from 'semantic-ui-react'
 import Login from '../Components/Login';
 import Nav from '../Components/Nav'
 import MenuTop from '../Components/MenuTop'
@@ -20,12 +20,12 @@ function PrivateRoute({ component: Component, ...rest }) {
           cookies.get('mycookies') ? (
             <>
                 <Grid columns='equal' >
-                    <Grid.Column width={2} style={{height: "100%", paddingRight: "0"}} >
+                    <Grid.Column width={2} style={{height: "100vh", paddingRight: "0"}} >
                         <Nav />
                     </Grid.Column>
                     <Grid.Column width={14} style={{paddingLeft: "0"}}>
-                        <MenuTop/>
-                        <Component {...props} />
+                          <div style={{marginBottom: "3%"}}><MenuTop/></div>
+                          <Component {...props}/>
                     </Grid.Column>
                 </Grid>
             {/* <Component {...props} /> */}
@@ -75,10 +75,10 @@ export default class router extends Component {
 
         return (
             <>
-                <PrivateRoute path='/dashboard' component={Dashboard}/>
-                <PrivateRoute path='/orders' component={Orders}/>
+                <PrivateRoute exact path='/dashboard' component={Dashboard}/>
+                <PrivateRoute exact path='/orders' component={Orders}/>
                 <PrivateRoute exact path='/products' component={Products}/>
-                <PublicRoute path='/products/details/:sku' component={ProductDetails}/>
+                <PublicRoute exact path='/products/details/:sku' component={ProductDetails}/>
                 <Route exact path="/" component={Login} />
             </>
         )

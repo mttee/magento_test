@@ -19,7 +19,7 @@ export default class Products extends Component {
     UNSAFE_componentWillMount(){
         axios({
             method: 'get',
-            url: 'https://localhost/magento_test/index.php/rest//V1/products?searchCriteria[pageSize]=5',
+            url: 'https://localhost/magento_test/index.php/rest//V1/products?searchCriteria[pageSize]=10',
             headers: {
                 'content-type': 'application/json',
                 'Authorization': 'Bearer ' + cookies.get('mycookies')
@@ -72,6 +72,7 @@ export default class Products extends Component {
                                         var description = result.substring(0, maxLength) + '...';
                                         return description;
                                     }
+                                    return null
                                 })
                                
                             

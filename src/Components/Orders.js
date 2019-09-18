@@ -128,7 +128,6 @@ export default class Orders extends Component {
             this.setState({
                 orderDetail: response.data
             });
-            console.log(response.data);
             this.getGroupCustomer(response.data.customer_group_id)
             this.getCountry(response.data.billing_address.country_id).then(result => this.setState({countryCustomerBilling: result}))
             this.getCountry(response.data.extension_attributes.shipping_assignments[0].shipping.address.country_id).then(result => this.setState({countryCustomerShipping: result}))
@@ -167,14 +166,11 @@ export default class Orders extends Component {
         })
             .then((response) => {
                 var arrDate = [];
-                console.log(response.data.items);
                 response.data.items.forEach(it => {
                     const date = (moment(it.updated_at).format("YYY,MM,DD,HH,mm,0,0"))
                     arrDate.push(date);
 
                 });
-                console.log(arrDate);
-
                 this.setState({
                     items: response.data.items,
                     date: response.data.items,
@@ -458,7 +454,6 @@ export default class Orders extends Component {
                     </Modal.Actions> */}
                 </Modal>
                 
-
 
 
 

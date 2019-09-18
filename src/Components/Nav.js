@@ -23,7 +23,7 @@ export default class Nav extends Component {
     render() {
         const { activeItem } = this.state
         return (
-            <Menu compact icon='labeled' vertical fluid style={nav}>
+            <Menu compact icon='labeled' className="nav" vertical fluid >
                 <Menu.Item
                     name='logo'
                     className="itemLogo"
@@ -68,12 +68,16 @@ export default class Nav extends Component {
     }
 }
 
-const nav = {
-    backgroundColor: "#373330",
-    borderRadius: "0px",
-    height: "100vh",
-    border: "0px"
-}
+// const nav = {
+//     backgroundColor: "#373330",
+//     borderRadius: "0px",
+//     height: "100vh",
+//     border: "0px",
+//     position: "fixed",
+//     width: "12px !important",
+//     display: "block"
+// }
+
 const navitem = {
     color: "white",
     borderRadius: "0px",

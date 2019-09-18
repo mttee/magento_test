@@ -15,7 +15,7 @@ export default class MenuTop extends Component {
     }
 
     signOut = () => {
-        cookies.remove('mycookies')
+        cookies.remove('mycookies', { path: '/' })
         this.setState({
             isSignOut: true
         })
@@ -23,10 +23,10 @@ export default class MenuTop extends Component {
 
     render() {
         if(this.state.isSignOut === true){
-            return <Redirect to="/"/>
+            return <Redirect exact to="/"/>
         }
         return (
-            <Menu style={{ backgroundColor: "rgb(55, 51, 48)", borderRadius: "0", border: "0", position: "relative", margin:"0" }}>                
+            <Menu className="MenuTop" >                
                 <Feed className="helloAdmin">
                     <Feed.Event
                     image='https://images-na.ssl-images-amazon.com/images/I/51QsquBv8DL._SX425_.jpg'
