@@ -35,7 +35,7 @@ export default class Login extends Component {
             return (
                 <Message
                     error
-                    header='Không thể đăng nhập!'
+                    header="Can't Login"
                     content={this.state.contentMassage}
                 />
             )
@@ -46,7 +46,7 @@ export default class Login extends Component {
 
         if (this.state.username === '' || this.state.password === '') {
             this.setState({
-                contentMassage: "Không được để trống các trường!",
+                contentMassage: "Fields cannot be empty",
                 colorMessage: 'warning',
                 statusMessage: true
             })
@@ -78,8 +78,9 @@ export default class Login extends Component {
 
             }).catch((error) => {
                 this.setState({
-                    contentMassage: "Username hoặc password không chính xác!",
-                    statusMessage: true
+                    contentMassage: "The account sign-in was incorrect or your account is disabled temporarily. Please wait and try again later.",
+                    statusMessage: true,
+                    loading: false
                 })
             });
         }
@@ -124,7 +125,6 @@ export default class Login extends Component {
                                         icon='user'
                                         iconPosition='left'
                                         label='Username'
-                                        placeholder='Username'
                                         name="username"
                                         onChange={this.getValueForm}
                                     />
@@ -136,8 +136,8 @@ export default class Login extends Component {
                                         name='password'
                                         onChange={this.getValueForm}
                                     />
-                                    {/* {this.buttonSunmit()} */}
-                                    <Button content='Login' primary onClick={this.submitForm} />
+                                    {this.buttonSunmit()}
+                                    {/* <Button content='Login' primary onClick={this.submitForm} /> */}
                                 </Form>
                                 {this.showMessage()}
                             </Grid.Column>

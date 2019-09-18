@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Image, Modal, Button, Header, Icon, Grid, Message, Segment, Divider, Table, Dimmer, Loader } from 'semantic-ui-react'
+import { Modal, Header, Grid, Segment, Divider, Table, Dimmer, Loader } from 'semantic-ui-react'
 
 //import calendar
 // import {
@@ -14,10 +14,9 @@ import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.scss'
-import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
-import { async } from 'q';
 
-const DragAndDropCalendar = withDragAndDrop(Calendar)
+
+
 
 //Custom date of react big calendar
 const mapToRBCFormat = e => Object.assign({}, e, {
@@ -156,7 +155,7 @@ export default class Orders extends Component {
     //     }
     // }
 
-    componentDidMount() {
+    UNSAFE_componentWillMount() {
 
         axios({
             method: 'get',
@@ -254,7 +253,7 @@ export default class Orders extends Component {
                 </Segment>
             )
         }
-        //console.log(this.state.orderDetail);
+
         const { open, dimmer } = this.state
         return (
 
@@ -284,7 +283,7 @@ export default class Orders extends Component {
 
 
             // <FullCalendar defaultView="dayGridMonth" plugins={[ dayGridPlugin ]} />
-
+            
             <>
                 <Modal dimmer={dimmer} open={open} onClose={this.close}>
                     <Modal.Header style={HeaderStyle}>Orders {this.state.orderDetail ? this.state.orderDetail.increment_id : null}</Modal.Header>
@@ -458,6 +457,7 @@ export default class Orders extends Component {
                         />
                     </Modal.Actions> */}
                 </Modal>
+                
 
 
 

@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import Cookies from 'universal-cookie';
-import { Grid, Image, Segment, Header, Divider, Rating, Form, Message, Button, Container, Tab, Card, Popup, Icon, Dimmer, Loader, TextArea } from 'semantic-ui-react'
+import { Grid, Image, Segment, Header, Divider, Rating, Form, Message, Button, Container, Tab, Card, Icon, Dimmer, Loader, Comment } from 'semantic-ui-react'
 import { Zoom } from 'react-slideshow-image';
-import { async } from 'q';
 
 const axios = require('axios');
 const cookies = new Cookies();
@@ -168,8 +167,10 @@ export default class ProductDetails extends Component {
                             const result = c.value.replace(regex, '');
                             return result;
                         }
+                        return null
                     })}
                 </Tab.Pane>
+
         },
         {
             menuItem: 'More Information', render: () =>
@@ -178,115 +179,125 @@ export default class ProductDetails extends Component {
                         Activity:
                     {this.state.attributeActivity.map((ac) => {
                             var kq;
-                            {
-                                this.state.product.custom_attributes.map((ca, key) => {
-                                    if (ca.attribute_code === 'activity') {
-                                        var array = JSON.parse("[" + ca.value + "]");
-                                        array.map((v, key) => {
-                                            // console.log(v)
-                                            //console.log(v)
-                                            //  console.log(key)
-                                            if (v == ac.value) {
-                                                //console.log(ac.label)
-                                                kq = (<span key={key} style={styleInfomationSpan}> {ac.label}, </span>)
-                                            }
-                                        })
 
-                                    }
-                                })
-                            }
+                            this.state.product.custom_attributes.map((ca, key) => {
+                                if (ca.attribute_code === 'activity') {
+                                    var array = JSON.parse("[" + ca.value + "]");
+                                    array.map((v, key) => {
+                                        
+                                        // console.log(v)
+                                        // console.log(key)
+                                        if (v == ac.value) {
+                                            // console.log(v)
+                                            kq = (<span key={key} style={styleInfomationSpan}> {ac.label}, </span>)
+                                        }
+                                        //return null
+                                    })
+
+                                }
+                                return null
+                            })
+
                             return kq
                         })}
                     </p>
                     <p style={styleInfomation}>Style:
                     {this.state.attributeStyle.map((ac) => {
                         var kq;
-                        {
-                            this.state.product.custom_attributes.map((ca, key) => {
-                                if (ca.attribute_code === 'style_bags') {
-                                    var array = JSON.parse("[" + ca.value + "]");
-                                    array.map((v, key) => {
-                                        // console.log(v)
-                                        //console.log(v)
-                                        //  console.log(key)
-                                        if (v == ac.value) {
-                                            //console.log(ac.label)
-                                            kq = (<span key={key} style={styleInfomationSpan}> {ac.label} </span>)
-                                        }
-                                    })
 
-                                }
-                            })
-                        }
+                        this.state.product.custom_attributes.map((ca, key) => {
+                            if (ca.attribute_code === 'style_bags') {
+                                var array = JSON.parse("[" + ca.value + "]");
+                                array.map((v, key) => {
+                                    // console.log(v)
+                                    //console.log(v)
+                                    //  console.log(key)
+                                    if (v == ac.value) {
+                                        //console.log(ac.label)
+                                        kq = (<span key={key} style={styleInfomationSpan}> {ac.label} </span>)
+                                    }
+                                    return null
+                                })
+
+                            }
+                            return null
+                        })
+
                         return kq
                     })}
                     </p>
                     <p style={styleInfomation}>Material:
                 {this.state.attributeMaterial.map((ac) => {
                         var kq;
-                        {
-                            this.state.product.custom_attributes.map((ca, key) => {
-                                if (ca.attribute_code === "material") {
-                                    var array = JSON.parse("[" + ca.value + "]");
-                                    array.map((v, key) => {
-                                        // console.log(v)
-                                        //console.log(v)
-                                        //  console.log(key)
-                                        if (v == ac.value) {
-                                            //console.log(ac.label)
-                                            kq = (<span key={key} style={styleInfomationSpan}> {ac.label}, </span>)
-                                        }
-                                    })
 
-                                }
-                            })
-                        }
+                        this.state.product.custom_attributes.map((ca, key) => {
+                            if (ca.attribute_code === "material") {
+                                var array = JSON.parse("[" + ca.value + "]");
+                                array.map((v, key) => {
+                                    // console.log(v)
+                                    //console.log(v)
+                                    //  console.log(key)
+                                    if (v == ac.value) {
+                                        //console.log(ac.label)
+                                        kq = (<span key={key} style={styleInfomationSpan}> {ac.label}, </span>)
+                                    }
+                                    return null
+                                })
+
+                            }
+                            return null
+                        })
+
                         return kq
                     })}
                     </p>
                     <p style={styleInfomation}>Strap/Handle:
                     {this.state.attributeStrap_Handle.map((ac) => {
                         var kq;
-                        {
-                            this.state.product.custom_attributes.map((ca, key) => {
-                                if (ca.attribute_code === "strap_bags") {
-                                    var array = JSON.parse("[" + ca.value + "]");
-                                    array.map((v, key) => {
-                                        // console.log(v)
-                                        //console.log(v)
-                                        //  console.log(key)
-                                        if (v == ac.value) {
-                                            //console.log(ac.label)
-                                            kq = (<span key={key} style={styleInfomationSpan}> {ac.label}, </span>)
-                                        }
-                                    })
 
-                                }
-                            })
-                        }
+                        this.state.product.custom_attributes.map((ca, key) => {
+                            if (ca.attribute_code === "strap_bags") {
+                                var array = JSON.parse("[" + ca.value + "]");
+                                array.map((v, key) => {
+                                    // console.log(v)
+                                    //console.log(v)
+                                    //  console.log(key)
+                                    if (v == ac.value) {
+                                        //console.log(ac.label)
+                                        kq = (<span key={key} style={styleInfomationSpan}> {ac.label}, </span>)
+                                    }
+                                    return null
+                                })
+
+                            }
+                            return null
+                        })
+
                         return kq
                     })}
                     </p>
                     <p style={styleInfomation}>Features:
                     {this.state.attributeFeatures.map((ac) => {
                         var kq;
-                        {
-                            this.state.product.custom_attributes.map((ca, key) => {
-                                if (ca.attribute_code === "features_bags") {
-                                    var array = JSON.parse("[" + ca.value + "]");
-                                    array.map((v, key) => {
-                                        // console.log(v)
-                                        //console.log(v)
-                                        //  console.log(key)
-                                        if (v == ac.value) {
-                                            //console.log(ac.label)
-                                            kq = (<span key={key} style={styleInfomationSpan}> {ac.label}, </span>)
-                                        }
-                                    })
 
-                                }
-                            })
-                        }
+                        this.state.product.custom_attributes.map((ca, key) => {
+                            if (ca.attribute_code === "features_bags") {
+                                var array = JSON.parse("[" + ca.value + "]");
+                                array.map((v, key) => {
+                                    // console.log(v)
+                                    //console.log(v)
+                                    //  console.log(key)
+                                    if (v == ac.value) {
+                                        //console.log(ac.label)
+                                        kq = (<span key={key} style={styleInfomationSpan}> {ac.label}, </span>)
+                                    }
+                                    return null
+                                })
+
+                            }
+                            return null
+                        })
+
                         return kq
                     })}
                     </p>
@@ -295,19 +306,43 @@ export default class ProductDetails extends Component {
         {
             menuItem: 'Reviews', render: () =>
                 <Tab.Pane>
+                    <Grid divided>
+                        <Grid.Row>
+                            <Grid.Column>
+                                <Comment.Group>
+                                    <Comment style={{ textAlign: "left" }}>
+                                        <Comment.Avatar as='a' src='https://cdn.theatlantic.com/assets/media/img/photo/2015/11/images-from-the-2016-sony-world-pho/s01_130921474920553591/main_900.jpg?1448476701' />
+                                        <Comment.Content>
+                                            <Comment.Author>Stevie Feliciano</Comment.Author>
+                                            <Comment.Metadata>
+                                                <div>2 days ago</div>
+                                                <div>
+                                                    <Icon name='star' />5 Faves
+                                                </div>
+                                            </Comment.Metadata>
+                                            <Comment.Text>
+                                                Hey guys, I hope this example comment is helping you read this
+                                                documentation.
+                                            </Comment.Text>
+                                        </Comment.Content>
+                                    </Comment>
+                                </Comment.Group>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
                     <Grid columns={2} divided>
                         <Grid.Row>
                             <Grid.Column>
                                 <Form>
-                                <Form.Field>
-                                    <label style={{ textAlign: "left" }}>Nickname</label>
-                                    <Rating maxRating={5} defaultRating={3} icon='star' size='massive' style={{ float: "left" }}/>
-                                    <br />
-                                    <br />
-                                </Form.Field>
+                                    <Form.Field>
+                                        <label style={{ textAlign: "left" }}>Your Rating</label>
+                                        <Rating maxRating={5} defaultRating={3} icon='star' size='massive' style={{ float: "left" }} />
+                                        <br />
+                                        <br />
+                                    </Form.Field>
                                     <Form.Field>
                                         <label style={{ textAlign: "left" }}>Nickname</label>
-                                        <input/>
+                                        <input />
                                     </Form.Field>
                                     <Form.Field>
                                         <label style={{ textAlign: "left" }}>Summary</label>
@@ -315,9 +350,9 @@ export default class ProductDetails extends Component {
                                     </Form.Field>
                                     <Form.Field>
                                         <label style={{ textAlign: "left" }}>Review</label>
-                                        <textarea/>
+                                        <textarea />
                                     </Form.Field>
-                                    <Button type='submit'  inverted color='blue'>Submit Review &nbsp;<Icon name="send"/></Button>
+                                    <Button type='submit' inverted color='blue'>Submit Review &nbsp;<Icon name="send" /></Button>
                                 </Form>
                             </Grid.Column>
                         </Grid.Row>
@@ -343,7 +378,6 @@ export default class ProductDetails extends Component {
 
 
     render() {
-        console.log(this.state.product);
 
         if (this.state.loading === true) {
             return (<Segment style={{ height: "100vh", margin: "0" }}>
@@ -364,7 +398,7 @@ export default class ProductDetails extends Component {
                                 <div className="slide-container">
                                     <Zoom {...zoomOutProperties}>
                                         {
-                                            this.state.product.media_gallery_entries.map((each, index) => <img key={index} style={{ width: "100%" }} src={"http://localhost/magento_test/pub/media/catalog/product/" + each.file} />)
+                                            this.state.product.media_gallery_entries.map((each, index) => <img key={index} style={{ width: "100%" }} src={"http://localhost/magento_test/pub/media/catalog/product/" + each.file}/>)
                                         }
                                     </Zoom>
                                 </div>

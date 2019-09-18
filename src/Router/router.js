@@ -51,15 +51,11 @@ function PublicRoute({ component: Component, ...rest }) {
           cookies.get('mycookies') ? (
             <>
                 <Grid columns='equal' >
-                    {/* <Grid.Column width={2} style={{height: "100%", paddingRight: "0"}} >
-                        <Nav />
-                    </Grid.Column> */}
                     <Grid.Column width={16} style={{paddingLeft: "0"}}>
                         <MenuTop/>
                         <Component {...props} />
                     </Grid.Column>
                 </Grid>
-            {/* <Component {...props} /> */}
             </>
           ) : (
             <Redirect
@@ -74,22 +70,6 @@ function PublicRoute({ component: Component, ...rest }) {
     );
   }
 
-// const NavRoute = ({ exact, path, component: Component }) => (
-//     <Route exact={exact} path={path} render={(props) => (
-//         <div>
-//             <Grid columns='equal' >
-//                 <Grid.Column style={{height: "100%", paddingRight: "0"}} >
-//                     <Nav />
-//                 </Grid.Column>
-//                 <Grid.Column width={14} style={{paddingLeft: "0"}}>
-//                     <MenuTop/>
-//                     <Component {...props} />
-//                 </Grid.Column>
-//             </Grid>
-//         </div>
-//     )} />
-// )
-
 export default class router extends Component {
     render() {
 
@@ -99,7 +79,6 @@ export default class router extends Component {
                 <PrivateRoute path='/orders' component={Orders}/>
                 <PrivateRoute exact path='/products' component={Products}/>
                 <PublicRoute path='/products/details/:sku' component={ProductDetails}/>
-                {/* <NavRoute path="/dashboard" component={Dashboard} /> */}
                 <Route exact path="/" component={Login} />
             </>
         )

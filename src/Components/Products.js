@@ -16,7 +16,7 @@ export default class Products extends Component {
     }
 
 
-    componentWillMount(){
+    UNSAFE_componentWillMount(){
         axios({
             method: 'get',
             url: 'https://localhost/magento_test/index.php/rest//V1/products?searchCriteria[pageSize]=5',
@@ -25,7 +25,6 @@ export default class Products extends Component {
                 'Authorization': 'Bearer ' + cookies.get('mycookies')
             },
         }).then((response) => {
-            console.log(response.data.items);
             this.setState({
                 products: response.data.items,
                 loading: false
