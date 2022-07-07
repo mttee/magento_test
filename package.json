@@ -8,7 +8,7 @@
     "@fullcalendar/react": "^4.3.0",
     "axios": "^0.19.0",
     "fullcalendar-reactwrapper": "^1.0.7",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "node-sass": "^4.12.0",
     "react": "^16.9.0",
     "react-big-calendar": "^0.22.0",
